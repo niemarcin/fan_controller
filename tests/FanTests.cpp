@@ -3,67 +3,68 @@
 #include "Fan.hpp"
 
 TEST_CASE("Fan - setSpeed() behavior", "[Fan]") {
-    Fan f{};
-    auto disabledRpm = 0;
-    auto minRpm = 1000;
-    auto maxRpm = 3000;
+    Fan fan{};
+
+    constexpr auto disabledRpm = Fan::disabledFanRpm;
+    constexpr auto minRpm = Fan::minFanRpm;
+    constexpr auto maxRpm = Fan::maxFanRpm;
 
     SECTION("created fan is disabled") {
-        CHECK(f.getSpeed() == disabledRpm);
+        CHECK(fan.getSpeed() == disabledRpm);
     }
 
     SECTION("setting proper values") {
-        f.setSpeed(minRpm);
-        CHECK(f.getSpeed() == minRpm);
+        fan.setSpeed(minRpm);
+        CHECK(fan.getSpeed() == minRpm);
 
-        f.setSpeed(maxRpm);
-        CHECK(f.getSpeed() == maxRpm);
+        fan.setSpeed(maxRpm);
+        CHECK(fan.getSpeed() == maxRpm);
 
-        f.setSpeed(disabledRpm);
-        CHECK(f.getSpeed() == disabledRpm);
+        fan.setSpeed(disabledRpm);
+        CHECK(fan.getSpeed() == disabledRpm);
     }
 
     SECTION("setting invalid values") {
-        auto before = f.getSpeed();
+        auto before = fan.getSpeed();
 
-        REQUIRE_THROWS_AS(f.setSpeed(minRpm - 1), std::invalid_argument);
-        CHECK(f.getSpeed() == before);
+        REQUIRE_THROWS_AS(fan.setSpeed(minRpm - 1), std::invalid_argument);
+        CHECK(fan.getSpeed() == before);
 
-        REQUIRE_THROWS_AS(f.setSpeed(maxRpm + 1), std::invalid_argument);
-        CHECK(f.getSpeed() == before);
+        REQUIRE_THROWS_AS(fan.setSpeed(maxRpm + 1), std::invalid_argument);
+        CHECK(fan.getSpeed() == before);
     }
 }
 
 SCENARIO("Fan - enable() & disable() behavior", "[Fan]") {
     GIVEN("Created fan with previously set initial speed") {
-        Fan f{};
+        Fan fan{};
         auto disabledRpm = 0;
         auto initialRpm = 2500;
 
-        f.setSpeed(initialRpm);
-        REQUIRE(f.getSpeed() == initialRpm);
+        fan.setSpeed(initialRpm);
+        REQUIRE(fan.getSpeed() == initialRpm);
 
         WHEN("Fan is disabled") {
-            f.disable();
+            fan.disable();
 
             THEN("Fan speed equals 0") {
-                REQUIRE(f.getSpeed() == disabledRpm);
+                REQUIRE(fan.getSpeed() == disabledRpm);
             }
         }
     }
 
     GIVEN("Created and not enabled fan") {
-        Fan f{};
+        Fan fan{};
         auto disabledRpm = 0;
         auto enabledRpm = 1000;
 
-        REQUIRE(f.getSpeed() == disabledRpm);
+        REQUIRE(fan.getSpeed() == disabledRpm);
 
         WHEN("Fan is enabled") {
-            f.enable();
+            fan.enable();
 
             THEN("Fan speed equals 1000") {
-                REQUIRE(f.getSpeed() == enabledRpm);
+                REQUIRE(fan.getSpeed() == enabledRpm);
             }
         }
     }
