@@ -3,12 +3,12 @@
 #include <cmath>
 
 void Fan::setSpeed(const int newRpm) {
-    if ((newRpm < 1000 and newRpm != 0) or newRpm > 3000) {
+    if ((newRpm < minFanRpm and newRpm != 0) or newRpm > maxFanRpm) {
         throw std::invalid_argument("Invalid speed");
     }
     auto difference = std::abs(newRpm - rpm);
     for (auto i = 0; i < difference; ++i) {
-        if (newRpm - rpm > 0) {
+        if (newRpm > rpm) {
             rpm++;
         } else {
             rpm--;
@@ -21,11 +21,11 @@ int Fan::getSpeed() const {
 }
 
 bool Fan::disable() {
-    rpm = 0;
+    rpm = disabledFanRpm;
     return true;
 }
 
 bool Fan::enable() {
-    rpm = 1000;
+    rpm = minFanRpm;
     return true;
 }
